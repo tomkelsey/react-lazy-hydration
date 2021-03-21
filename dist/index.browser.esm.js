@@ -1,4 +1,5 @@
 import _extends from '@babel/runtime/helpers/esm/extends';
+import _objectWithoutPropertiesLoose from '@babel/runtime/helpers/esm/objectWithoutPropertiesLoose';
 import { useRef, useState, useEffect, createElement, useLayoutEffect } from 'react';
 
 var event = "hydrate";
@@ -32,7 +33,7 @@ function LazyHydrate(props) {
       didHydrate = props.didHydrate,
       _props$wrapper = props.wrapper,
       wrapper = _props$wrapper === void 0 ? "div" : _props$wrapper,
-      wrapperProps = props.wrapperProps;
+      rest = _objectWithoutPropertiesLoose(props, ["noWrapper", "ssrOnly", "whenIdle", "whenVisible", "promise", "on", "children", "didHydrate", "wrapper"]);
 
   if ('production' !== process.env.NODE_ENV && !ssrOnly && !whenIdle && !whenVisible && !on.length && !promise) {
     console.error("LazyHydration: Enable atleast one trigger for hydration.\n" + "If you don't want to hydrate, use ssrOnly");
@@ -121,12 +122,12 @@ function LazyHydrate(props) {
 
     return createElement(wrapper, _extends({
       ref: childRef
-    }, wrapperProps), children);
+    }, rest), children);
   } else {
     return createElement(wrapper, _extends({
       ref: childRef,
       suppressHydrationWarning: true
-    }, wrapperProps, {
+    }, rest, {
       dangerouslySetInnerHTML: {
         __html: ""
       }

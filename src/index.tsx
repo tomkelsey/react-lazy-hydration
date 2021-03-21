@@ -9,7 +9,6 @@ export type Props = {
   noWrapper?: boolean;
   didHydrate?: VoidFunction;
   wrapper?: string;
-  wrapperProps?: React.HTMLProps<HTMLElement>;
   promise?: Promise<any>;
   children: React.ReactNode;
   on?: (keyof HTMLElementEventMap)[] | keyof HTMLElementEventMap;
@@ -56,7 +55,7 @@ function LazyHydrate(props: Props) {
     children,
     didHydrate, // callback for hydration
     wrapper = "div",
-    wrapperProps
+    ...rest
   } = props;
 
   if (
@@ -150,16 +149,12 @@ function LazyHydrate(props: Props) {
     if (noWrapper) {
       return children;
     }
-    return React.createElement(
-      wrapper,
-      { ref: childRef, ...wrapperProps },
-      children
-    );
+    return React.createElement(wrapper, { ref: childRef, ...rest }, children);
   } else {
     return React.createElement(wrapper, {
       ref: childRef,
       suppressHydrationWarning: true,
-      ...wrapperProps,
+      ...rest,
       dangerouslySetInnerHTML: { __html: "" }
     });
   }
