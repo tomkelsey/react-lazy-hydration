@@ -7,6 +7,7 @@ export type LazyProps = {
   whenIdle?: boolean;
   whenVisible?: boolean;
   noWrapper?: boolean;
+  dangerouslyClone?: boolean;
   didHydrate?: VoidFunction;
   promise?: Promise<any>;
   on?: (keyof HTMLElementEventMap)[] | keyof HTMLElementEventMap;
@@ -53,6 +54,7 @@ function LazyHydrate(props: Props) {
     whenVisible,
     promise, // pass a promise which hydrates
     on = [],
+    dangerouslyClone,
     children,
     didHydrate, // callback for hydration
     ...rest
@@ -146,7 +148,7 @@ function LazyHydrate(props: Props) {
   }, [hydrated, on, ssrOnly, whenIdle, whenVisible, didHydrate, promise]);
 
   if (hydrated) {
-    if (noWrapper) {
+    if (noWrapper || dangerouslyClone) {
       return children;
     }
     return (
@@ -154,6 +156,11 @@ function LazyHydrate(props: Props) {
         {children}
       </div>
     );
+  } else if (dangerouslyClone && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      dangerouslySetInnerHTML: { __html: "" },
+      ref: childRef
+    });
   } else {
     return (
       <div
