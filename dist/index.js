@@ -5,7 +5,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var _extends = _interopDefault(require('@babel/runtime/helpers/extends'));
-var _objectWithoutPropertiesLoose = _interopDefault(require('@babel/runtime/helpers/objectWithoutPropertiesLoose'));
 var React = require('react');
 
 var isBrowser = typeof document !== "undefined";
@@ -40,8 +39,8 @@ function LazyHydrate(props) {
       children = props.children,
       didHydrate = props.didHydrate,
       _props$wrapper = props.wrapper,
-      wrapper = _props$wrapper === void 0 ? 'div' : _props$wrapper,
-      rest = _objectWithoutPropertiesLoose(props, ["noWrapper", "ssrOnly", "whenIdle", "whenVisible", "promise", "on", "children", "didHydrate", "wrapper"]);
+      wrapper = _props$wrapper === void 0 ? "div" : _props$wrapper,
+      wrapperProps = props.wrapperProps;
 
   if ('production' !== process.env.NODE_ENV && !ssrOnly && !whenIdle && !whenVisible && !on.length && !promise) {
     console.error("LazyHydration: Enable atleast one trigger for hydration.\n" + "If you don't want to hydrate, use ssrOnly");
@@ -130,28 +129,16 @@ function LazyHydrate(props) {
 
     return React.createElement(wrapper, _extends({
       ref: childRef
-    }, rest), children); // (
-    //   <div ref={childRef} style={{ display: "contents" }} {...rest}>
-    //     {children}
-    //   </div>
-    // );
+    }, wrapperProps), children);
   } else {
     return React.createElement(wrapper, _extends({
       ref: childRef,
       suppressHydrationWarning: true
-    }, rest, {
+    }, wrapperProps, {
       dangerouslySetInnerHTML: {
-        __html: ''
+        __html: ""
       }
-    })); // return (
-    //   <div
-    //     ref={childRef}
-    //     style={{ display: "contents" }}
-    //     suppressHydrationWarning
-    //     {...rest}
-    //     dangerouslySetInnerHTML={{ __html: "" }}
-    //   />
-    // );
+    }));
   }
 }
 

@@ -2,19 +2,18 @@ import * as React from "react";
 
 import { isBrowser, isDev } from "./constants.macro";
 
-export type LazyProps = {
+export type Props = {
   ssrOnly?: boolean;
   whenIdle?: boolean;
   whenVisible?: boolean;
   noWrapper?: boolean;
   didHydrate?: VoidFunction;
   wrapper?: string;
+  wrapperProps?: React.HTMLProps<HTMLElement>;
   promise?: Promise<any>;
+  children: React.ReactNode;
   on?: (keyof HTMLElementEventMap)[] | keyof HTMLElementEventMap;
 };
-
-type Props = Omit<React.HTMLProps<HTMLDivElement>, "dangerouslySetInnerHTML"> &
-  LazyProps;
 
 type VoidFunction = () => void;
 
@@ -57,7 +56,7 @@ function LazyHydrate(props: Props) {
     children,
     didHydrate, // callback for hydration
     wrapper = "div",
-    ...rest
+    wrapperProps
   } = props;
 
   if (
@@ -151,28 +150,18 @@ function LazyHydrate(props: Props) {
     if (noWrapper) {
       return children;
     }
-    return React.createElement(wrapper, { ref: childRef, ...rest }, children);
-    // (
-    //   <div ref={childRef} style={{ display: "contents" }} {...rest}>
-    //     {children}
-    //   </div>
-    // );
+    return React.createElement(
+      wrapper,
+      { ref: childRef, ...wrapperProps },
+      children
+    );
   } else {
     return React.createElement(wrapper, {
       ref: childRef,
       suppressHydrationWarning: true,
-      ...rest,
+      ...wrapperProps,
       dangerouslySetInnerHTML: { __html: "" }
     });
-    // return (
-    //   <div
-    //     ref={childRef}
-    //     style={{ display: "contents" }}
-    //     suppressHydrationWarning
-    //     {...rest}
-    //     dangerouslySetInnerHTML={{ __html: "" }}
-    //   />
-    // );
   }
 }
 
