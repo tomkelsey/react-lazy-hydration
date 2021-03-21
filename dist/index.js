@@ -37,9 +37,10 @@ function LazyHydrate(props) {
       promise = props.promise,
       _props$on = props.on,
       on = _props$on === void 0 ? [] : _props$on,
+      dangerouslyClone = props.dangerouslyClone,
       children = props.children,
       didHydrate = props.didHydrate,
-      rest = _objectWithoutPropertiesLoose(props, ["noWrapper", "ssrOnly", "whenIdle", "whenVisible", "promise", "on", "children", "didHydrate"]);
+      rest = _objectWithoutPropertiesLoose(props, ["noWrapper", "ssrOnly", "whenIdle", "whenVisible", "promise", "on", "dangerouslyClone", "children", "didHydrate"]);
 
   if ('production' !== process.env.NODE_ENV && !ssrOnly && !whenIdle && !whenVisible && !on.length && !promise) {
     console.error("LazyHydration: Enable atleast one trigger for hydration.\n" + "If you don't want to hydrate, use ssrOnly");
@@ -122,7 +123,7 @@ function LazyHydrate(props) {
   }, [hydrated, on, ssrOnly, whenIdle, whenVisible, didHydrate, promise]);
 
   if (hydrated) {
-    if (noWrapper) {
+    if (noWrapper || dangerouslyClone) {
       return children;
     }
 
@@ -132,6 +133,13 @@ function LazyHydrate(props) {
         display: "contents"
       }
     }, rest), children);
+  } else if (dangerouslyClone && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      dangerouslySetInnerHTML: {
+        __html: ""
+      },
+      ref: childRef
+    });
   } else {
     return /*#__PURE__*/React.createElement("div", _extends({
       ref: childRef,
