@@ -39,7 +39,9 @@ function LazyHydrate(props) {
       on = _props$on === void 0 ? [] : _props$on,
       children = props.children,
       didHydrate = props.didHydrate,
-      rest = _objectWithoutPropertiesLoose(props, ["noWrapper", "ssrOnly", "whenIdle", "whenVisible", "promise", "on", "children", "didHydrate"]);
+      _props$wrapper = props.wrapper,
+      wrapper = _props$wrapper === void 0 ? 'div' : _props$wrapper,
+      rest = _objectWithoutPropertiesLoose(props, ["noWrapper", "ssrOnly", "whenIdle", "whenVisible", "promise", "on", "children", "didHydrate", "wrapper"]);
 
   if ('production' !== process.env.NODE_ENV && !ssrOnly && !whenIdle && !whenVisible && !on.length && !promise) {
     console.error("LazyHydration: Enable atleast one trigger for hydration.\n" + "If you don't want to hydrate, use ssrOnly");
@@ -126,24 +128,30 @@ function LazyHydrate(props) {
       return children;
     }
 
-    return /*#__PURE__*/React.createElement("div", _extends({
-      ref: childRef,
-      style: {
-        display: "contents"
-      }
-    }, rest), children);
+    return React.createElement(wrapper, _extends({
+      ref: childRef
+    }, rest), children); // (
+    //   <div ref={childRef} style={{ display: "contents" }} {...rest}>
+    //     {children}
+    //   </div>
+    // );
   } else {
-    return /*#__PURE__*/React.createElement("div", _extends({
+    return React.createElement(wrapper, _extends({
       ref: childRef,
-      style: {
-        display: "contents"
-      },
       suppressHydrationWarning: true
     }, rest, {
       dangerouslySetInnerHTML: {
-        __html: ""
+        __html: ''
       }
-    }));
+    })); // return (
+    //   <div
+    //     ref={childRef}
+    //     style={{ display: "contents" }}
+    //     suppressHydrationWarning
+    //     {...rest}
+    //     dangerouslySetInnerHTML={{ __html: "" }}
+    //   />
+    // );
   }
 }
 

@@ -8,6 +8,7 @@ export type LazyProps = {
   whenVisible?: boolean;
   noWrapper?: boolean;
   didHydrate?: VoidFunction;
+  wrapper?: string;
   promise?: Promise<any>;
   on?: (keyof HTMLElementEventMap)[] | keyof HTMLElementEventMap;
 };
@@ -55,6 +56,7 @@ function LazyHydrate(props: Props) {
     on = [],
     children,
     didHydrate, // callback for hydration
+    wrapper = "div",
     ...rest
   } = props;
 
@@ -149,21 +151,28 @@ function LazyHydrate(props: Props) {
     if (noWrapper) {
       return children;
     }
-    return (
-      <div ref={childRef} style={{ display: "contents" }} {...rest}>
-        {children}
-      </div>
-    );
+    return React.createElement(wrapper, { ref: childRef, ...rest }, children);
+    // (
+    //   <div ref={childRef} style={{ display: "contents" }} {...rest}>
+    //     {children}
+    //   </div>
+    // );
   } else {
-    return (
-      <div
-        ref={childRef}
-        style={{ display: "contents" }}
-        suppressHydrationWarning
-        {...rest}
-        dangerouslySetInnerHTML={{ __html: "" }}
-      />
-    );
+    return React.createElement(wrapper, {
+      ref: childRef,
+      suppressHydrationWarning: true,
+      ...rest,
+      dangerouslySetInnerHTML: { __html: "" }
+    });
+    // return (
+    //   <div
+    //     ref={childRef}
+    //     style={{ display: "contents" }}
+    //     suppressHydrationWarning
+    //     {...rest}
+    //     dangerouslySetInnerHTML={{ __html: "" }}
+    //   />
+    // );
   }
 }
 
