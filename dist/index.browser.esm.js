@@ -130,7 +130,7 @@ function LazyHydrate(props) {
       dangerouslySetInnerHTML: {
         __html: ""
       },
-      ref: childRef
+      forwardedRef: childRef
     });
   } else {
     return /*#__PURE__*/createElement("div", _extends({

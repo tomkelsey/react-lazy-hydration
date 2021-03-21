@@ -136,7 +136,7 @@ function LazyHydrate(props) {
       dangerouslySetInnerHTML: {
         __html: ""
       },
-      ref: childRef
+      forwardedRef: childRef
     });
   } else {
     return /*#__PURE__*/React.createElement("div", _extends({

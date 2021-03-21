@@ -159,7 +159,7 @@ function LazyHydrate(props: Props) {
   } else if (dangerouslyClone && React.isValidElement(children)) {
     return React.cloneElement(children, {
       dangerouslySetInnerHTML: { __html: "" },
-      ref: childRef
+      forwardedRef: childRef
     });
   } else {
     return (
