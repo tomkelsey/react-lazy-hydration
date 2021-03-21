@@ -131,13 +131,14 @@ function LazyHydrate(props: Props) {
     }
 
     events.forEach(event => {
-      childRef.current.addEventListener(event, hydrate, {
+      const instance = childRef.current;
+      instance.addEventListener(event, hydrate, {
         once: true,
         capture: true,
         passive: true
       });
       cleanupFns.push(() => {
-        childRef.current.removeEventListener(event, hydrate, { capture: true });
+        instance.removeEventListener(event, hydrate, { capture: true });
       });
     });
 
